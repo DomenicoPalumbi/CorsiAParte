@@ -4,18 +4,18 @@ import com.elitesoftwarehouse.corsiAParte.data.dto.CorsoDTO;
 import com.elitesoftwarehouse.corsiAParte.data.dto.CorsoFullDTO;
 import com.elitesoftwarehouse.corsiAParte.data.entity.Corso;
 import com.elitesoftwarehouse.corsiAParte.repository.CorsoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class CorsoService {
-
-    private final CorsoRepository corsoRepository;
-    private final CorsoConverter corsoConverter;
+    @Autowired
+    CorsoRepository corsoRepository;
+    @Autowired
+    CorsoConverter corsoConverter;
 
     public CorsoService(CorsoRepository corsoRepository, CorsoConverter corsoConverter) {
         this.corsoRepository = corsoRepository;
