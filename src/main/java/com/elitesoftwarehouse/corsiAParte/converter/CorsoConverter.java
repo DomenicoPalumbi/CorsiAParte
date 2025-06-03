@@ -3,6 +3,7 @@ import com.elitesoftwarehouse.corsiAParte.data.dto.CorsoDTO;
 import com.elitesoftwarehouse.corsiAParte.data.dto.CorsoFullDTO;
 import com.elitesoftwarehouse.corsiAParte.data.entity.Corso;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +11,8 @@ import java.util.stream.Collectors;
 @Component
 public class CorsoConverter {
 
-    private final ModelMapper modelMapper;
+    @Autowired
+     ModelMapper modelMapper;
 
     public ModelMapper getModelMapper() {
         return modelMapper;

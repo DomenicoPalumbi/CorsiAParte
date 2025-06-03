@@ -13,6 +13,7 @@ public class CorsoFullDTO {
     private Integer annoAccademico;
     //private String nomeCompletoDocente;
   //  private List<String> nomiCompletiDiscenti = new ArrayList<>();
+    private long docenteId;
 
     public CorsoFullDTO() {
     }
@@ -58,6 +59,12 @@ public class CorsoFullDTO {
 
     public void setAnnoAccademico(Integer annoAccademico) {
         this.annoAccademico = annoAccademico;
+    }
+    public long getDocenteId() {
+        return docenteId;
+    }
+    public void setDocenteId(long docenteId) {
+        this.docenteId = docenteId;
     }
 
     /*public String getNomeCompletoDocente() {

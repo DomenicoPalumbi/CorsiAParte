@@ -13,9 +13,8 @@ public class CorsoDTO {
     private Long id;
     private String nome;
     private Integer annoAccademico;
-    /*@JsonIgnore
     private Long docenteId;
-    private String nomeCompletoDocente;
+    /*private String nomeCompletoDocente;
     private List<String> nomiCompletiDiscenti;
 
     public CorsoDTO() {
@@ -67,7 +66,7 @@ public class CorsoDTO {
         this.annoAccademico = annoAccademico;
     }
 
-    /*public Long getDocenteId() {
+    public Long getDocenteId() {
         return docenteId;
     }
 
@@ -75,7 +74,7 @@ public class CorsoDTO {
         this.docenteId = docenteId;
     }
 
-    public String getDocenteNomeCompleto() {
+    /*public String getDocenteNomeCompleto() {
         return nomeCompletoDocente;
     }
 

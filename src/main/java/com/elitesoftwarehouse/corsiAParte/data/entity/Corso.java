@@ -18,6 +18,9 @@ public class Corso {
     @Column(name = "anno_accademico", nullable = true)
     private Integer annoAccademico;
 
+    @Column( name = "id_doc")
+    private Long docenteId;
+
   /*  @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_doc", referencedColumnName = "id", nullable = false)
     private Docente docente;
