@@ -67,7 +67,14 @@ public class Corso {
         this.annoAccademico = annoAccademico;
     }
 
-   /* public Docente getDocente() {
+    public Long getDocenteId() {
+        return docenteId;
+    }
+
+    public void setDocenteId(Long docenteId) {
+        this.docenteId = docenteId;
+    }
+/* public Docente getDocente() {
         return docente;
     }
 
