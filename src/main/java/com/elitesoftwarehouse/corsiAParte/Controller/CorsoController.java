@@ -17,12 +17,6 @@ public class CorsoController {
     @Autowired
     private CorsoService corsoService;
 
-   /* @Autowired
-    private DocenteService docenteService;
-
-    @Autowired
-    private DiscenteService discenteService;
-*/
     @GetMapping("/lista")
     public ResponseEntity<List<CorsoDTO>> listaCorsi() {
         return ResponseEntity.ok(corsoService.getAllCorsiDTO());
