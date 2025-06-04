@@ -21,28 +21,10 @@ public class Corso {
     @Column( name = "id_doc")
     private Long docenteId;
 
-  /*  @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_doc", referencedColumnName = "id", nullable = false)
-    private Docente docente;
 
-    @ManyToMany
-    @JoinTable(
-            name = "corso_discente",
-            joinColumns = @JoinColumn(name = "corso_id"),
-            inverseJoinColumns = @JoinColumn(name = "discente_id")
-    )
-    private List<Discente> discenti;/*
-
-    /* costruttori */
     public Corso() {}
 
-    /*public Corso(String nome, Integer annoAccademico, Docente docente) {
-        this.nome = nome;
-        this.annoAccademico = annoAccademico;
-        this.docente = docente;
-    }*/
 
-    /* getter e setter */
     public Long getId() {
         return id;
     }
@@ -67,19 +49,11 @@ public class Corso {
         this.annoAccademico = annoAccademico;
     }
 
-   /* public Docente getDocente() {
-        return docente;
+    public Long getDocenteId() {
+        return docenteId;
     }
 
-    public void setDocente(Docente docente) {
-        this.docente = docente;
+    public void setDocenteId(Long docenteId) {
+        this.docenteId = docenteId;
     }
-
-    public List<Discente> getDiscenti() {
-        return discenti;
-    }
-
-    public void setDiscenti(List<Discente> discenti) {
-        this.discenti = discenti;
-    }*/
 }

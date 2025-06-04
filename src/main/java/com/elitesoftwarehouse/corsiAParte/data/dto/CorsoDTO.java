@@ -14,33 +14,10 @@ public class CorsoDTO {
     private String nome;
     private Integer annoAccademico;
     private Long docenteId;
-    /*private String nomeCompletoDocente;
-    private List<String> nomiCompletiDiscenti;
+    private String nomeDocente;
+    private String cognomeDocente;
 
-    public CorsoDTO() {
-        this.nomiCompletiDiscenti = new ArrayList<>();
-    }
-*/
-    /*public CorsoDTO(Corso corso) {
-        this();
-        if (corso != null) {
-            this.id = corso.getId();
-            this.nome = corso.getNome();
-            this.annoAccademico = corso.getAnnoAccademico();
 
-            if (corso.getDocente() != null) {
-                Docente docente = corso.getDocente();
-                this.docenteId = docente.getId();
-                this.nomeCompletoDocente = docente.getNome() + " " + docente.getCognome();
-            }
-
-            if (corso.getDiscenti() != null) {
-                this.nomiCompletiDiscenti = corso.getDiscenti().stream()
-                        .map(d -> d.getNome() + " " + d.getCognome())
-                        .collect(Collectors.toList());
-            }
-        }
-    }*/
 
     public Long getId() {
         return id;
@@ -74,20 +51,19 @@ public class CorsoDTO {
         this.docenteId = docenteId;
     }
 
-    /*public String getDocenteNomeCompleto() {
-        return nomeCompletoDocente;
+    public String getNomeDocente() {
+        return nomeDocente;
     }
 
-    public void setDocenteNomeCompleto(String docenteNomeCompleto) {
-        this.nomeCompletoDocente = docenteNomeCompleto;
+    public void setNomeDocente(String nomeDocente) {
+        this.nomeDocente = nomeDocente;
     }
 
-    public List<String> getDiscentiNomiCompleti() {
-        return nomiCompletiDiscenti;
+    public String getCognomeDocente() {
+        return cognomeDocente;
     }
 
-    public void setDiscentiNomiCompleti(List<String> nomiCompletiDiscenti) {
-        this.nomiCompletiDiscenti = nomiCompletiDiscenti;
+    public void setCognomeDocente(String cognomeDocente) {
+        this.cognomeDocente = cognomeDocente;
     }
-*/
 }

@@ -1,19 +1,17 @@
 package com.elitesoftwarehouse.corsiAParte.data.dto;
 
 import com.elitesoftwarehouse.corsiAParte.data.entity.Corso;
-//import com.example.demo.data.entity.Docente;
-//import com.example.demo.data.entity.Discente;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CorsoFullDTO {
     private Long id;
     private String nome;
     private Integer annoAccademico;
-    //private String nomeCompletoDocente;
-  //  private List<String> nomiCompletiDiscenti = new ArrayList<>();
-    private long docenteId;
+    private Long docenteId;
+    private String nomeDocente;
+    private String cognomeDocente;
+
+
+
 
     public CorsoFullDTO() {
     }
@@ -22,20 +20,9 @@ public class CorsoFullDTO {
         this.id = corso.getId();
         this.nome = corso.getNome();
         this.annoAccademico = corso.getAnnoAccademico();
-    }
-/*
-        if (corso.getDocente() != null) {
-            this.nomeCompletoDocente = String.format("%s %s",
-                    corso.getDocente().getNome(),
-                    corso.getDocente().getCognome());
-        }
+        this.docenteId = corso.getDocenteId();
 
-        if (corso.getDiscenti() != null) {
-            this.nomiCompletiDiscenti = corso.getDiscenti().stream()
-                    .map(d -> String.format("%s %s", d.getNome(), d.getCognome()))
-                    .toList();
-        }
-    }*/
+    }
 
     public Long getId() {
         return id;
@@ -60,26 +47,26 @@ public class CorsoFullDTO {
     public void setAnnoAccademico(Integer annoAccademico) {
         this.annoAccademico = annoAccademico;
     }
-    public long getDocenteId() {
+    public Long getDocenteId() {
         return docenteId;
     }
-    public void setDocenteId(long docenteId) {
+    public void setDocenteId(Long docenteId) {
         this.docenteId = docenteId;
     }
 
-    /*public String getNomeCompletoDocente() {
-        return nomeCompletoDocente;
+    public String getNomeDocente() {
+        return nomeDocente;
     }
 
-    public void setNomeCompletoDocente(String nomeCompletoDocente) {
-        this.nomeCompletoDocente = nomeCompletoDocente;
+    public void setNomeDocente(String nomeDocente) {
+        this.nomeDocente = nomeDocente;
     }
 
-    public List<String> getNomiCompletiDiscenti() {
-        return nomiCompletiDiscenti;
+    public String getCognomeDocente() {
+        return cognomeDocente;
     }
 
-    public void setNomiCompletiDiscenti(List<String> nomiCompletiDiscenti) {
-        this.nomiCompletiDiscenti = nomiCompletiDiscenti;
-    }*/
+    public void setCognomeDocente(String cognomeDocente) {
+        this.cognomeDocente = cognomeDocente;
+    }
 }
