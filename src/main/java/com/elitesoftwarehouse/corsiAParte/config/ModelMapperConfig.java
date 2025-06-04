@@ -1,5 +1,5 @@
 
-package com.elitesoftwarehouse.corsiAParte.converter;
+package com.elitesoftwarehouse.corsiAParte.config;
 
 
 import org.modelmapper.ModelMapper;
