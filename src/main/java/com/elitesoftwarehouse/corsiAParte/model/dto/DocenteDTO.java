@@ -1,21 +1,29 @@
 package com.elitesoftwarehouse.corsiAParte.model.dto;
 
+
+
 public class DocenteDTO {
     private Long id;
-    private String nome;
-    private String cognome;
-    private String email;
+    private String nomeDocente;
+    private String cognomeDocente;
+    private String emailDocente;
 
     public DocenteDTO() {
     }
 
 
-    public DocenteDTO(Long id, String nome, String cognome, String email) {
+    public DocenteDTO(Long id, String nomeDocente, String cognomeDocente, String emailDocente) {
         this.id = id;
-        this.nome = nome;
-        this.cognome = cognome;
-        this.email = email;
+        this.nomeDocente = nomeDocente;
+        this.cognomeDocente = cognomeDocente;
+        this.emailDocente = emailDocente;
 
+    }
+
+    public DocenteDTO(String nomeDocente, String cognomeDocente, String emailDocente) {
+        this.nomeDocente = nomeDocente;
+        this.cognomeDocente = cognomeDocente;
+        this.emailDocente = emailDocente;
     }
 
     // Getter e Setter
@@ -27,28 +35,28 @@ public class DocenteDTO {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getNomeDocente() {
+        return nomeDocente;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setNomeDocente(String nomeDocente) {
+        this.nomeDocente = nomeDocente;
     }
 
-    public String getCognome() {
-        return cognome;
+    public String getCognomeDocente() {
+        return cognomeDocente;
     }
 
-    public void setCognome(String cognome) {
-        this.cognome = cognome;
+    public void setCognomeDocente(String cognomeDocente) {
+        this.cognomeDocente = cognomeDocente;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailDocente() {
+        return emailDocente;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailDocente(String emailDocente) {
+        this.emailDocente = emailDocente;
     }
 
 }

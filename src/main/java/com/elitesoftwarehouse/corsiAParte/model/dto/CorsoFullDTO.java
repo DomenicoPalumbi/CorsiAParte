@@ -1,19 +1,26 @@
 package com.elitesoftwarehouse.corsiAParte.model.dto;
 
 import com.elitesoftwarehouse.corsiAParte.model.entity.Corso;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.List;
 //import com.example.demo.data.entity.Docente;
 //import com.example.demo.data.entity.Discente;
 
 
 public class CorsoFullDTO {
-    //private Long id;
+    @JsonIgnore
+    private Long id;
     private String nome;
     private Integer annoAccademico;
-    //private String nomeCompletoDocente;
-    //  private List<String> nomiCompletiDiscenti = new ArrayList<>();
+    @JsonIgnore
     private Long docenteId;
-//    private String nomeDocente;
-//    private String cognomeDocente;
+    private String nomeDocente;
+    private String cognomeDocente;
+    @JsonIgnore
+    private String emailDocente;
+    private List<DiscenteDTO> discenti;
+
 
     public CorsoFullDTO() {
     }
@@ -24,33 +31,42 @@ public class CorsoFullDTO {
         this.annoAccademico = corso.getAnnoAccademico();
     }
 
+
     public void setDocenteId(Long docenteId) {
         this.docenteId = docenteId;
     }
 
-//    public String getNomeDocente() {
-//        return nomeDocente;
-//    }
-//
-//    public void setNomeDocente(String nomeDocente) {
-//        this.nomeDocente = nomeDocente;
-//    }
-//
-//    public String getCognomeDocente() {
-//        return cognomeDocente;
-//    }
-//
-//    public void setCognomeDocente(String cognomeDocente) {
-//        this.cognomeDocente = cognomeDocente;
-//    }
+    public String getNomeDocente() {
+        return nomeDocente;
+    }
 
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    public void setNomeDocente(String nomeDocente) {
+        this.nomeDocente = nomeDocente;
+    }
+
+    public String getCognomeDocente() {
+        return cognomeDocente;
+    }
+
+    public void setCognomeDocente(String cognomeDocente) {
+        this.cognomeDocente = cognomeDocente;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmailDocente() {
+        return emailDocente;
+    }
+
+    public void setEmailDocente(String emailDocente) {
+        this.emailDocente = emailDocente;
+    }
 
     public String getNome() {
         return nome;
@@ -76,4 +92,12 @@ public class CorsoFullDTO {
         this.docenteId = docenteId;
     }
 
+
+    public List<DiscenteDTO> getDiscenti() {
+        return discenti;
+    }
+
+    public void setDiscenti(List<DiscenteDTO> discenti) {
+        this.discenti = discenti;
+    }
 }

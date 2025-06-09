@@ -5,6 +5,8 @@ package com.elitesoftwarehouse.corsiAParte.model.dto;
 //import com.example.demo.data.entity.Docente;
 
 
+import java.util.List;
+
 public class CorsoDTO {
     private Long id;
     private String nome;
@@ -12,6 +14,7 @@ public class CorsoDTO {
     private Long docenteId;
     private String nomeDocente;
     private String cognomeDocente;
+    private List<DiscenteDTO> discenti;
 
 
     public Long getId() {
@@ -49,16 +52,37 @@ public class CorsoDTO {
     public String getNomeDocente() {
         return nomeDocente;
     }
-
     public void setNomeDocente(String nomeDocente) {
         this.nomeDocente = nomeDocente;
     }
-
     public String getCognomeDocente() {
         return cognomeDocente;
     }
-
     public void setCognomeDocente(String cognomeDocente) {
         this.cognomeDocente = cognomeDocente;
+    }
+
+//    public String getNomeDiscente() {
+//        return nomeDiscente;
+//    }
+//
+//    public void setNomeDiscente(String nomeDiscente) {
+//        this.nomeDiscente = nomeDiscente;
+//    }
+//
+//    public String getCognomeDiscente() {
+//        return cognomeDiscente;
+//    }
+//
+//    public void setCognomeDiscente(String cognomeDiscente) {
+//        this.cognomeDiscente = cognomeDiscente;
+//    }
+
+    public List<DiscenteDTO> getDiscenti() {
+        return discenti;
+    }
+
+    public void setDiscenti(List<DiscenteDTO> discenti) {
+        this.discenti = discenti;
     }
 }

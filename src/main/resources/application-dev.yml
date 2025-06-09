@@ -14,7 +14,9 @@ spring:
 docenti:
   service:
     url: http://localhost:8080
-
+discenti:
+  service:
+    url: http://localhost:8080
 logging:
   level:
     root: INFO
