@@ -47,26 +47,13 @@ public class DiscenteServiceClient {
 
     public DiscenteDTO createDiscente(DiscenteDTO discenteDTO) {
         try {
-            return webClient.post()
-                    .uri("/discenti/nuovo")  // Modificato per corrispondere all'endpoint del controller
-                    .bodyValue(discenteDTO)
-                    .retrieve()
-                    .bodyToMono(DiscenteDTO.class)
-                    .block();
-        } catch (Exception e) {
-            throw new RuntimeException("Impossibile creare il discente: " + e.getMessage());
-        }
-
-    }
-    public DiscenteDTO getOrCreateDiscente(DiscenteDTO discenteDTO) {
-        try {
-            // Controlla se esiste già
+            // Controlla se il discente esiste già nel sistema prima di crearlo
             DiscenteDTO esistente = getDiscenteByNomeAndCognome(discenteDTO.getNomeDiscente(), discenteDTO.getCognomeDiscente());
             if (esistente != null) {
+                // Se esiste già, restituisci il discente esistente
                 return esistente;
             }
-
-            // Se non esiste, lo creiamo
+            // Se non esiste, procedi con la creazione
             return webClient.post()
                     .uri("/discenti/nuovo")
                     .bodyValue(discenteDTO)
@@ -74,25 +61,43 @@ public class DiscenteServiceClient {
                     .bodyToMono(DiscenteDTO.class)
                     .block();
         } catch (Exception e) {
+            throw new RuntimeException("Impossibile creare il discente: " + e.getMessage());
+        }
+    }
+
+    public DiscenteDTO getOrCreateDiscente(DiscenteDTO discenteDTO) {
+        try {
+            // Verifica se esiste già un discente con nome e cognome
+            DiscenteDTO esistente = getDiscenteByNomeAndCognome(discenteDTO.getNomeDiscente(), discenteDTO.getCognomeDiscente());
+
+            // Se esiste, restituisci il discente esistente
+            if (esistente != null) {
+                return esistente;
+            }
+
+            // Se non esiste, crea un nuovo discente
+            return createDiscente(discenteDTO);
+        } catch (Exception e) {
             throw new RuntimeException("Impossibile gestire il discente: " + e.getMessage());
         }
     }
 
-    private DiscenteDTO getDiscenteByNomeAndCognome(String nome, String cognome) {
+
+    private DiscenteDTO getDiscenteByNomeAndCognome(String nomeDiscente, String cognomeDiscente) {
         try {
+            // Chiamata al microservizio per cercare un discente con nome e cognome
             return webClient.post()
                     .uri("/discenti/cerca")
-                    .bodyValue(Map.of(
-                            "nome", nome,
-                            "cognome", cognome
-                    ))
+                    .bodyValue(Map.of("nomeDiscente", nomeDiscente, "cognomeDiscente", cognomeDiscente))
                     .retrieve()
                     .bodyToMono(DiscenteDTO.class)
                     .block();
         } catch (Exception e) {
+            // Se c'è un errore o nessun risultato, ritorna null
             return null;
         }
     }
+
 
 
 

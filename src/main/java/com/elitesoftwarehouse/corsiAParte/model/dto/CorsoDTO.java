@@ -5,12 +5,16 @@ package com.elitesoftwarehouse.corsiAParte.model.dto;
 //import com.example.demo.data.entity.Docente;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 public class CorsoDTO {
+
     private Long id;
     private String nome;
     private Integer annoAccademico;
+    @JsonIgnore
     private Long docenteId;
     private String nomeDocente;
     private String cognomeDocente;

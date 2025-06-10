@@ -3,11 +3,14 @@ package com.elitesoftwarehouse.corsiAParte.service.client;
 import com.elitesoftwarehouse.corsiAParte.model.dto.DiscenteDTO;
 import com.elitesoftwarehouse.corsiAParte.model.entity.CorsoDiscente;
 import com.elitesoftwarehouse.corsiAParte.repository.CorsoDiscenteRepository;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CorsoDiscenteService {
@@ -19,24 +22,55 @@ public class CorsoDiscenteService {
                                 WebClient.Builder webClientBuilder) {
         this.corsoDiscenteRepository = corsoDiscenteRepository;
         this.webClient = webClientBuilder
-                .baseUrl("http://localhost:8080")  // microservizio studenti
+                .baseUrl("http://localhost:8080")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 
+    @Transactional
     public void saveAssociazioni(Long corsoId, List<Long> discenteIds) {
-        // Rimuovi le vecchie associazioni
-        corsoDiscenteRepository.deleteByCorsoId(corsoId);
+        try {
+            corsoDiscenteRepository.deleteByCorsoId(corsoId);
 
-        // Salva le nuove
-        List<CorsoDiscente> associazioni = discenteIds.stream()
-                .map(discenteId -> new CorsoDiscente(corsoId, discenteId))
-                .toList();
+            if (discenteIds != null && !discenteIds.isEmpty()) {
+                List<CorsoDiscente> associazioni = discenteIds.stream()
+                        .map(discenteId -> {
+                            CorsoDiscente cd = new CorsoDiscente();
+                            cd.setCorsoId(corsoId);
+                            cd.setDiscenteId(discenteId);
+                            return cd;
+                        })
+                        .toList();
+                corsoDiscenteRepository.saveAll(associazioni);
+            }
 
-        corsoDiscenteRepository.saveAll(associazioni);
+            webClient.put()
+                    .uri("/discenti/corso/{corsoId}", corsoId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(new UpdateDiscenteRequest(discenteIds != null ? discenteIds : List.of()))
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+
+        } catch (WebClientException e) {
+            // Log dell'errore ma continuiamo con le modifiche locali
+        }
     }
 
+    @Transactional
     public void removeAssociazioni(Long corsoId) {
         corsoDiscenteRepository.deleteByCorsoId(corsoId);
+        try {
+            webClient.put()
+                    .uri("/discenti/corso/{corsoId}", corsoId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(new UpdateDiscenteRequest(List.of()))
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        } catch (WebClientException e) {
+            // Log dell'errore
+        }
     }
 
     public List<DiscenteDTO> getDiscentiByCorsoId(Long corsoId) {
@@ -47,12 +81,34 @@ public class CorsoDiscenteService {
 
         if (discenteIds.isEmpty()) return List.of();
 
-        return webClient.post()
-                .uri("/discenti/discenti/by-ids")
-                .bodyValue(discenteIds)
-                .retrieve()
-                .bodyToFlux(DiscenteDTO.class)
-                .collectList()
-                .block();
+        try {
+            return webClient.post()
+                    .uri("/discenti/discenti/by-ids")  // Ripristinato il path completo
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(discenteIds)  // Invia direttamente la lista degli ID
+                    .retrieve()
+                    .bodyToFlux(DiscenteDTO.class)
+                    .collectList()
+                    .block();
+        } catch (WebClientException e) {
+            // Log dell'errore
+            return List.of();
+        }
+    }
+}
+
+class UpdateDiscenteRequest {
+    private List<Long> discenteIds;
+
+    public UpdateDiscenteRequest(List<Long> discenteIds) {
+        this.discenteIds = discenteIds;
+    }
+
+    public List<Long> getDiscenteIds() {
+        return discenteIds;
+    }
+
+    public void setDiscenteIds(List<Long> discenteIds) {
+        this.discenteIds = discenteIds;
     }
 }
