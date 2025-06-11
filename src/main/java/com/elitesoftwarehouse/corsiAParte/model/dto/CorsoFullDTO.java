@@ -4,8 +4,6 @@ import com.elitesoftwarehouse.corsiAParte.model.entity.Corso;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
-//import com.example.demo.data.entity.Docente;
-//import com.example.demo.data.entity.Discente;
 
 
 public class CorsoFullDTO {

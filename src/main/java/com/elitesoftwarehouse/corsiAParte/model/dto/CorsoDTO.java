@@ -1,10 +1,6 @@
 
 package com.elitesoftwarehouse.corsiAParte.model.dto;
 
-//import com.example.demo.data.entity.Discente;
-//import com.example.demo.data.entity.Docente;
-
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
@@ -65,22 +61,6 @@ public class CorsoDTO {
     public void setCognomeDocente(String cognomeDocente) {
         this.cognomeDocente = cognomeDocente;
     }
-
-//    public String getNomeDiscente() {
-//        return nomeDiscente;
-//    }
-//
-//    public void setNomeDiscente(String nomeDiscente) {
-//        this.nomeDiscente = nomeDiscente;
-//    }
-//
-//    public String getCognomeDiscente() {
-//        return cognomeDiscente;
-//    }
-//
-//    public void setCognomeDiscente(String cognomeDiscente) {
-//        this.cognomeDiscente = cognomeDiscente;
-//    }
 
     public List<DiscenteDTO> getDiscenti() {
         return discenti;

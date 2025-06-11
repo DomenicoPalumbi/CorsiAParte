@@ -20,31 +20,6 @@ public class DiscenteServiceClient {
                 .build();
     }
 
-    public DiscenteDTO getDiscenteById(Long id) {
-        try {
-            return webClient.get()
-                    .uri("/discenti/{id}", id)
-                    .retrieve()
-                    .bodyToMono(DiscenteDTO.class)
-                    .block();
-        } catch (Exception e) {
-            throw new RuntimeException("Impossibile recuperare il discente: " + e.getMessage());
-        }
-    }
-
-    public List<DiscenteDTO> getAllDiscenti() {
-        try {
-            return webClient.get()
-                    .uri("/discenti")  // Modificato per corrispondere all'endpoint del controller
-                    .retrieve()
-                    .bodyToFlux(DiscenteDTO.class)
-                    .collectList()
-                    .block();
-        } catch (Exception e) {
-            throw new RuntimeException("Impossibile recuperare la lista dei discenti: " + e.getMessage());
-        }
-    }
-
     public DiscenteDTO createDiscente(DiscenteDTO discenteDTO) {
         try {
             // Controlla se il discente esiste già nel sistema prima di crearlo
@@ -97,10 +72,6 @@ public class DiscenteServiceClient {
             return null;
         }
     }
-
-
-
-
     public DiscenteDTO updateDiscente(Long id, DiscenteDTO discenteDTO) {
         try {
             return webClient.put()

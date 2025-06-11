@@ -34,7 +34,7 @@ public class CorsoMapper {
                     dto.setCognomeDocente(docente.getCognomeDocente());
                 }
             } catch (Exception e) {
-                // Log the error or ignore it gracefully
+
             }
         }
 

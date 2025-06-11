@@ -47,13 +47,13 @@ public class CorsoDiscenteService {
             webClient.put()
                     .uri("/discenti/corso/{corsoId}", corsoId)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(new UpdateDiscenteRequest(discenteIds != null ? discenteIds : List.of()))
+                    .bodyValue(discenteIds != null ? discenteIds : List.of())
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
 
         } catch (WebClientException e) {
-            // Log dell'errore ma continuiamo con le modifiche locali
+            // gestione errore
         }
     }
 
@@ -64,7 +64,7 @@ public class CorsoDiscenteService {
             webClient.put()
                     .uri("/discenti/corso/{corsoId}", corsoId)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(new UpdateDiscenteRequest(List.of()))
+                    .bodyValue(List.of())
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
@@ -83,9 +83,9 @@ public class CorsoDiscenteService {
 
         try {
             return webClient.post()
-                    .uri("/discenti/discenti/by-ids")  // Ripristinato il path completo
+                    .uri("/discenti/discenti/by-ids")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(discenteIds)  // Invia direttamente la lista degli ID
+                    .bodyValue(discenteIds)
                     .retrieve()
                     .bodyToFlux(DiscenteDTO.class)
                     .collectList()
@@ -94,21 +94,5 @@ public class CorsoDiscenteService {
             // Log dell'errore
             return List.of();
         }
-    }
-}
-
-class UpdateDiscenteRequest {
-    private List<Long> discenteIds;
-
-    public UpdateDiscenteRequest(List<Long> discenteIds) {
-        this.discenteIds = discenteIds;
-    }
-
-    public List<Long> getDiscenteIds() {
-        return discenteIds;
-    }
-
-    public void setDiscenteIds(List<Long> discenteIds) {
-        this.discenteIds = discenteIds;
     }
 }
