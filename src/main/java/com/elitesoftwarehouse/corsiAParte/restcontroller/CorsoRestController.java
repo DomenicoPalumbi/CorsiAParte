@@ -1,5 +1,5 @@
 
-package com.elitesoftwarehouse.corsiAParte.RestController;
+package com.elitesoftwarehouse.corsiAParte.restcontroller;
 
 import com.elitesoftwarehouse.corsiAParte.mapper.CorsoMapper;
 import com.elitesoftwarehouse.corsiAParte.model.dto.CorsoDTO;

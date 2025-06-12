@@ -1,6 +1,7 @@
 
 package com.elitesoftwarehouse.corsiAParte.model.entity;
 
+import com.elitesoftwarehouse.corsiAParte.model.dto.DiscenteDTO;
 import jakarta.persistence.*;
 
 @Entity
