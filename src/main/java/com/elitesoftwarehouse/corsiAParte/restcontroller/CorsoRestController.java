@@ -1,91 +1,62 @@
-
 package com.elitesoftwarehouse.corsiAParte.restcontroller;
 
-import com.elitesoftwarehouse.corsiAParte.mapper.CorsoMapper;
 import com.elitesoftwarehouse.corsiAParte.model.dto.CorsoDTO;
 import com.elitesoftwarehouse.corsiAParte.model.dto.CorsoFullDTO;
-import com.elitesoftwarehouse.corsiAParte.model.dto.DiscenteDTO;
-import com.elitesoftwarehouse.corsiAParte.model.entity.Corso;
-import com.elitesoftwarehouse.corsiAParte.repository.CorsoRepository;
 import com.elitesoftwarehouse.corsiAParte.service.CorsoService;
-import com.elitesoftwarehouse.corsiAParte.service.client.CorsoDiscenteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/corsi")
 public class CorsoRestController {
 
+    private final CorsoService corsoService;
+
     @Autowired
-    private CorsoService corsoService;
-    @Autowired
-    private CorsoRepository corsoRepository;
-    @Autowired
-    private CorsoMapper corsoMapper;
-    @Autowired
-    private CorsoDiscenteService corsoDiscenteService;
+    public CorsoRestController(CorsoService corsoService) {
+        this.corsoService = corsoService;
+    }
 
     @PostMapping("/nuovo")
-    public ResponseEntity<CorsoDTO> saveCorso(@RequestBody CorsoFullDTO corsoFullDTO) {
-        try {
-            CorsoDTO nuovoCorso = corsoService.saveCorso(corsoFullDTO);
-            return ResponseEntity.ok(nuovoCorso);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public Mono<ResponseEntity<CorsoDTO>> createCorso(@RequestBody CorsoFullDTO corsoFullDTO) {
+        return corsoService.saveCorso(corsoFullDTO)
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().build()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CorsoDTO> updateCorso(
-            @PathVariable Long id,
-            @RequestBody CorsoFullDTO corsoFullDTO) {
-        try {
-            CorsoDTO updatedCorso = corsoService.updateCorso(id, corsoFullDTO);
-            return ResponseEntity.ok(updatedCorso);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public Mono<ResponseEntity<CorsoDTO>> updateCorso(@PathVariable Long id, @RequestBody CorsoFullDTO corsoFullDTO) {
+        return corsoService.updateCorso(id, corsoFullDTO)
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().build()));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteCorso(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<Void>> deleteCorso(@PathVariable Long id) {
         try {
             corsoService.deleteCorso(id);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return Mono.just(ResponseEntity.ok().build());
+        } catch (Exception e) {
+            return Mono.just(ResponseEntity.notFound().build());
         }
     }
-    @GetMapping("/lista")
-    public List<CorsoDTO> getAllCorsi() {
-        // Recuperiamo tutti i corsi dal repository
-        List<Corso> corsi = corsoRepository.findAll();
 
-        // Creiamo una lista di DTO dei corsi con i discenti associati
-        return corsi.stream()
-                .map(corso -> {
-                    CorsoDTO corsoDTO = corsoMapper.toDto(corso);
-
-                    // Recuperiamo i discenti associati al corso
-                    List<DiscenteDTO> discenti = corsoDiscenteService.getDiscentiByCorsoId(corso.getId());
-                    corsoDTO.setDiscenti(discenti);
-
-                    return corsoDTO;
-                })
-                .collect(Collectors.toList());
-    }
     @GetMapping("/{id}")
-    public ResponseEntity<CorsoDTO> getCorsoById(@PathVariable Long id) {
-        try {
-            CorsoDTO corsoDTO = corsoService.getCorsoById(id);
-            return ResponseEntity.ok(corsoDTO);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public Mono<ResponseEntity<CorsoDTO>> getCorsoById(@PathVariable Long id) {
+        return corsoService.getCorsoById(id)
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(ResponseEntity.notFound().build()));
+    }
+
+    @GetMapping("/lista")
+    public Mono<ResponseEntity<List<CorsoDTO>>> getAllCorsi() {
+        return corsoService.getAllCorsi()
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().build()));
     }
 }
+

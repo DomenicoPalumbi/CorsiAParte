@@ -1,3 +1,42 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: corsi-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/CorsoDB
+    username: postgres
+    password: domelite
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8081
+
+# Configurazione dei servizi esterni
+apigateway:
+  service:
+    url: http://localhost:8082
+
+docenti:
+  service:
+    url: http://localhost:8080
+
+discenti:
+  service:
+    url: http://localhost:8080
+
+# Configurazione logging
+logging:
+  level:
+    root: INFO
+    com.elitesoftwarehouse.corsiAParte: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO

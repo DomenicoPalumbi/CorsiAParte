@@ -7,6 +7,7 @@ import com.elitesoftwarehouse.corsiAParte.model.entity.Corso;
 import com.elitesoftwarehouse.corsiAParte.service.client.DocenteServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 public class CorsoMapper {
@@ -15,34 +16,28 @@ public class CorsoMapper {
 
     public Corso toEntity(CorsoFullDTO dto) {
         Corso corso = new Corso();
-        updateCorsoFromDTO(dto, corso);
+        corso.setNome(dto.getNome());
+        corso.setAnnoAccademico(dto.getAnnoAccademico());
         return corso;
     }
 
-    public CorsoDTO toDto(Corso entity) {
+    public Mono<CorsoDTO> toDto(Corso corso) {
         CorsoDTO dto = new CorsoDTO();
-        dto.setId(entity.getId());
-        dto.setNome(entity.getNome());
-        dto.setAnnoAccademico(entity.getAnnoAccademico());
-        dto.setDocenteId(entity.getDocenteId());
+        dto.setId(corso.getId());
+        dto.setNome(corso.getNome());
+        dto.setAnnoAccademico(corso.getAnnoAccademico());
+        dto.setDocenteId(corso.getDocenteId());
 
-        if (entity.getDocenteId() != null) {
-            try {
-                DocenteDTO docente = docenteClient.getDocenteById(entity.getDocenteId());
-                if (docente != null) {
-                    dto.setNomeDocente(docente.getNomeDocente());
-                    dto.setCognomeDocente(docente.getCognomeDocente());
-                }
-            } catch (Exception e) {
-
-            }
+        if (corso.getDocenteId() != null) {
+            return docenteClient.getDocenteById(corso.getDocenteId())
+                    .map(docente -> {
+                        dto.setNomeDocente(docente.getNomeDocente());
+                        dto.setCognomeDocente(docente.getCognomeDocente());
+                        return dto;
+                    })
+                    .defaultIfEmpty(dto);
         }
 
-        return dto;
-    }
-
-    public void updateCorsoFromDTO(CorsoFullDTO dto, Corso corso) {
-        corso.setNome(dto.getNome());
-        corso.setAnnoAccademico(dto.getAnnoAccademico());
+        return Mono.just(dto);
     }
 }

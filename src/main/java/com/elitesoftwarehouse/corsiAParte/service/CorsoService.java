@@ -11,11 +11,12 @@ import com.elitesoftwarehouse.corsiAParte.service.client.DiscenteServiceClient;
 import com.elitesoftwarehouse.corsiAParte.service.client.DocenteServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service
 public class CorsoService {
 
@@ -38,84 +39,83 @@ public class CorsoService {
         this.corsoDiscenteService = corsoDiscenteService;
     }
 
-    // Metodo per creare un corso
-    public CorsoDTO saveCorso(CorsoFullDTO corsoFullDTO) {
-        // 1. Creare o ottenere il docente
-        DocenteDTO docente = docenteServiceClient.getOrCreateDocente(
+    public Mono<CorsoDTO> saveCorso(CorsoFullDTO corsoFullDTO) {
+        return docenteServiceClient.getOrCreateDocente(
                 corsoFullDTO.getNomeDocente(),
                 corsoFullDTO.getCognomeDocente()
-        );
-
-        // 2. Creare o ottenere i discenti
-        List<DiscenteDTO> discentiAssociati = new ArrayList<>();
-        if (corsoFullDTO.getDiscenti() != null) {
-            for (DiscenteDTO discenteDTO : corsoFullDTO.getDiscenti()) {
-                DiscenteDTO discente = discenteServiceClient.getOrCreateDiscente(discenteDTO);
-                discentiAssociati.add(discente);
+        ).flatMap(docente -> {
+            // 2. Creare o ottenere i discenti
+            List<DiscenteDTO> discentiAssociati = new ArrayList<>();
+            if (corsoFullDTO.getDiscenti() != null) {
+                for (DiscenteDTO discenteDTO : corsoFullDTO.getDiscenti()) {
+                    DiscenteDTO discente = discenteServiceClient.getOrCreateDiscente(discenteDTO);
+                    discentiAssociati.add(discente);
+                }
             }
-        }
 
-        // 3. Creare il corso
-        Corso corso = corsoMapper.toEntity(corsoFullDTO);
-        corso.setDocenteId(docente.getId());
-        Corso savedCorso = corsoRepository.save(corso);
+            // 3. Creare il corso
+            Corso corso = corsoMapper.toEntity(corsoFullDTO);
+            corso.setDocenteId(docente.getId());
+            Corso savedCorso = corsoRepository.save(corso);
 
-        // 4. Associare automaticamente i discenti al corso
-        if (!discentiAssociati.isEmpty()) {
-            List<Long> discentiIds = discentiAssociati.stream()
-                    .map(DiscenteDTO::getId)
-                    .collect(Collectors.toList());
-            corsoDiscenteService.saveAssociazioni(savedCorso.getId(), discentiIds);  // Associa i discenti al corso
-        }
+            // 4. Associare automaticamente i discenti al corso
+            if (!discentiAssociati.isEmpty()) {
+                List<Long> discentiIds = discentiAssociati.stream()
+                        .map(DiscenteDTO::getId)
+                        .collect(Collectors.toList());
+                corsoDiscenteService.saveAssociazioni(savedCorso.getId(), discentiIds);
+            }
 
-        // 5. Preparare il DTO di risposta con discenti associati
-        CorsoDTO corsoDTO = corsoMapper.toDto(savedCorso);
-        corsoDTO.setDiscenti(discentiAssociati);
-        return corsoDTO;
+            // 5. Preparare il DTO di risposta con discenti associati
+            return corsoMapper.toDto(savedCorso)
+                    .map(dto -> {
+                        dto.setDiscenti(discentiAssociati);
+                        return dto;
+                    });
+        });
     }
 
-    // Metodo per aggiornare un corso
-    public CorsoDTO updateCorso(Long id, CorsoFullDTO corsoFullDTO) {
-        // 1. Verifica che il corso esista
-        Corso esistente = corsoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Corso non trovato con id: " + id));
-
-        // 2. Aggiornare il docente
-        DocenteDTO docente = docenteServiceClient.getOrCreateDocente(
+    public Mono<CorsoDTO> updateCorso(Long id, CorsoFullDTO corsoFullDTO) {
+        return docenteServiceClient.getOrCreateDocente(
                 corsoFullDTO.getNomeDocente(),
                 corsoFullDTO.getCognomeDocente()
-        );
+        ).flatMap(docente -> {
+            // 1. Verifica che il corso esista
+            Corso esistente = corsoRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Corso non trovato con id: " + id));
 
-        // 3. Aggiornare i discenti
-        List<DiscenteDTO> discentiAggiornati = new ArrayList<>();
-        if (corsoFullDTO.getDiscenti() != null) {
-            for (DiscenteDTO discenteDTO : corsoFullDTO.getDiscenti()) {
-                DiscenteDTO discente = discenteServiceClient.getOrCreateDiscente(discenteDTO);
-                discentiAggiornati.add(discente);
+            // 3. Aggiornare i discenti
+            List<DiscenteDTO> discentiAggiornati = new ArrayList<>();
+            if (corsoFullDTO.getDiscenti() != null) {
+                for (DiscenteDTO discenteDTO : corsoFullDTO.getDiscenti()) {
+                    DiscenteDTO discente = discenteServiceClient.getOrCreateDiscente(discenteDTO);
+                    discentiAggiornati.add(discente);
+                }
             }
-        }
 
-        // 4. Aggiornare il corso
-        Corso corsoAggiornato = corsoMapper.toEntity(corsoFullDTO);
-        corsoAggiornato.setId(id); // Mantieni lo stesso ID
-        corsoAggiornato.setDocenteId(docente.getId());
-        Corso savedCorso = corsoRepository.save(corsoAggiornato);
+            // 4. Aggiornare il corso
+            Corso corsoAggiornato = corsoMapper.toEntity(corsoFullDTO);
+            corsoAggiornato.setId(id);
+            corsoAggiornato.setDocenteId(docente.getId());
+            Corso savedCorso = corsoRepository.save(corsoAggiornato);
 
-        // 5. Aggiornare le associazioni corso-discenti
-        if (!discentiAggiornati.isEmpty()) {
-            List<Long> discentiIds = discentiAggiornati.stream()
-                    .map(DiscenteDTO::getId)
-                    .collect(Collectors.toList());
-            corsoDiscenteService.saveAssociazioni(savedCorso.getId(), discentiIds);
-        }
+            // 5. Aggiornare le associazioni corso-discenti
+            if (!discentiAggiornati.isEmpty()) {
+                List<Long> discentiIds = discentiAggiornati.stream()
+                        .map(DiscenteDTO::getId)
+                        .collect(Collectors.toList());
+                corsoDiscenteService.saveAssociazioni(savedCorso.getId(), discentiIds);
+            }
 
-        // 6. Prepariamo il DTO di risposta con discenti associati
-        CorsoDTO corsoDTO = corsoMapper.toDto(savedCorso);
-        corsoDTO.setDiscenti(discentiAggiornati);
-        return corsoDTO;
+            // 6. Prepariamo il DTO di risposta con discenti associati
+            return corsoMapper.toDto(savedCorso)
+                    .map(dto -> {
+                        dto.setDiscenti(discentiAggiornati);
+                        return dto;
+                    });
+        });
     }
 
-    // Metodo per eliminare un corso
     public void deleteCorso(Long id) {
         // 1. Verifica che il corso esista
         Corso corso = corsoRepository.findById(id)
@@ -128,26 +128,37 @@ public class CorsoService {
         corsoRepository.deleteById(id);
     }
 
-    // Metodo per ottenere un corso e i discenti associati
-    public CorsoDTO getCorsoById(Long id) {
+    public Mono<CorsoDTO> getCorsoById(Long id) {
         Corso corso = corsoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Corso non trovato con id: " + id));
 
-        CorsoDTO corsoDTO = corsoMapper.toDto(corso);
-
-        // Carica i discenti associati
-        List<DiscenteDTO> discenti = corsoDiscenteService.getDiscentiByCorsoId(id);
-        corsoDTO.setDiscenti(discenti);
-
-        return corsoDTO;
+        return corsoMapper.toDto(corso)
+                .flatMap(corsoDTO -> 
+                    corsoDiscenteService.getDiscentiByCorsoId(id)
+                        .map(discenti -> {
+                            corsoDTO.setDiscenti(discenti);
+                            return corsoDTO;
+                        })
+                );
     }
-    public List<CorsoDTO> getAllCorsi() {
-        return corsoRepository.findAll().stream()
-                .map(corso -> {
-                    CorsoDTO dto = corsoMapper.toDto(corso);
-                    dto.setDiscenti(corsoDiscenteService.getDiscentiByCorsoId(corso.getId()));
-                    return dto;
-                })
+
+    public Mono<List<CorsoDTO>> getAllCorsi() {
+        List<Corso> corsi = corsoRepository.findAll();
+        List<Mono<CorsoDTO>> corsoMonos = corsi.stream()
+                .map(corso -> corsoMapper.toDto(corso)
+                        .flatMap(dto -> corsoDiscenteService.getDiscentiByCorsoId(corso.getId())
+                                .map(discenti -> {
+                                    dto.setDiscenti(discenti);
+                                    return dto;
+                                })))
                 .collect(Collectors.toList());
+
+        return Mono.zip(corsoMonos, objects -> {
+            List<CorsoDTO> result = new ArrayList<>();
+            for (Object obj : objects) {
+                result.add((CorsoDTO) obj);
+            }
+            return result;
+        });
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import reactor.core.publisher.Mono;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -73,26 +74,24 @@ public class CorsoDiscenteService {
         }
     }
 
-    public List<DiscenteDTO> getDiscentiByCorsoId(Long corsoId) {
+    public Mono<List<DiscenteDTO>> getDiscentiByCorsoId(Long corsoId) {
         List<Long> discenteIds = corsoDiscenteRepository.findByCorsoId(corsoId)
                 .stream()
                 .map(CorsoDiscente::getDiscenteId)
                 .toList();
 
-        if (discenteIds.isEmpty()) return List.of();
+        if (discenteIds.isEmpty()) return Mono.just(List.of());
 
-        try {
-            return webClient.post()
-                    .uri("/discenti/discenti/by-ids")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(discenteIds)
-                    .retrieve()
-                    .bodyToFlux(DiscenteDTO.class)
-                    .collectList()
-                    .block();
-        } catch (WebClientException e) {
-            // Log dell'errore
-            return List.of();
-        }
+        return webClient.post()
+                .uri("/discenti/discenti/by-ids")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(discenteIds)
+                .retrieve()
+                .bodyToFlux(DiscenteDTO.class)
+                .collectList()
+                .onErrorResume(e -> {
+                    // Log dell'errore
+                    return Mono.just(List.of());
+                });
     }
 }
