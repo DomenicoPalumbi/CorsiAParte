@@ -23,16 +23,17 @@ public class UserController {
             if (userService.existsByUsername(userDTO.getUsername())) {
                 return ResponseEntity.badRequest().build();
             }
-            
+
             // Converti il DTO in entità User
             User user = new User(
                 userDTO.getUsername(),
                 userDTO.getPassword(),
                 userDTO.getEmail(),
+                userDTO.getRole(),
                 userDTO.getFirstName(),
                 userDTO.getLastName()
             );
-            
+
             User savedUser = userService.save(user);
             return ResponseEntity.ok(savedUser);
         } catch (Exception e) {
@@ -48,7 +49,7 @@ public class UserController {
             if (!userService.findByUsername(userService.findById(id).get().getUsername()).isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             userService.deleteById(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {

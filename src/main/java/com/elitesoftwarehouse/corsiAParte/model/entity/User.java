@@ -25,6 +25,9 @@ public class User implements Serializable {
     @Column(name="email", nullable=false, unique=true)
     private String email;
 
+    @Column(name="role", nullable = false)
+    private String role;
+
     @Column(name="first_name", nullable=false)
     private String firstName;
 
@@ -32,10 +35,11 @@ public class User implements Serializable {
     private String lastName;
 
 
-    public User(String username, String password, String email, String firstName, String lastName) {
+    public User(String username, String password, String email,String role, String firstName, String lastName) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -90,5 +94,13 @@ public class User implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
