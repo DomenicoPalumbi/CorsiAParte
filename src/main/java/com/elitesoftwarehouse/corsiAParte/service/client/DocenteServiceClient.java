@@ -37,12 +37,10 @@ public class DocenteServiceClient {
 
     public Mono<DocenteDTO> getOrCreateDocente(String nomeDocente, String cognomeDocente) {
         return getDocenteByNomeAndCognome(nomeDocente, cognomeDocente)
-                .switchIfEmpty(Mono.defer(() -> {
-                    DocenteDTO newDocente = new DocenteDTO();
-                    newDocente.setNomeDocente(nomeDocente);
-                    newDocente.setCognomeDocente(cognomeDocente);
-                    return createDocente(newDocente);
-                }));
+                .switchIfEmpty(Mono.defer(() -> createDocente(
+                        new DocenteDTO(nomeDocente, cognomeDocente)
+                )));
+
     }
 
     private Mono<DocenteDTO> getDocenteByNomeAndCognome(String nome, String cognome) {

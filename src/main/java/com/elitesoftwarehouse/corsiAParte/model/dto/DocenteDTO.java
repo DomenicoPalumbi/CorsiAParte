@@ -11,6 +11,7 @@ public class DocenteDTO {
     public DocenteDTO() {
     }
 
+    public DocenteDTO(String nomeDocente, String cognomeDocente) {}
 
     public DocenteDTO(Long id, String nomeDocente, String cognomeDocente, String emailDocente) {
         this.id = id;
