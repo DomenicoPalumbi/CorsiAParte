@@ -83,7 +83,7 @@ public class CorsoDiscenteService {
 
         try {
             return webClient.post()
-                    .uri("/discenti/discenti/by-ids")
+                    .uri("/discenti/by-ids")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(discenteIds)
                     .retrieve()
